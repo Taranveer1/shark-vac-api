@@ -6,7 +6,6 @@ print('Enter Shark email address: ')
 USERNAME = 'example@email.com'
 print('Enter password: ')
 PASSWORD = 'Password$'
-
 #sign in  using the ayla api
 ayla_api = get_ayla_api(USERNAME, PASSWORD)
 ayla_api.sign_in()
@@ -14,7 +13,7 @@ ayla_api.sign_in()
 #message user saying sign-in successful
 print('\nSign-in Succesful!')
 
-#Choose which robot you would like create a scedule for
+#Choose which robot you would like create a schedule for
 shark_vacs = ayla_api.get_devices()
 
 device_names = [device.name for device in shark_vacs]
@@ -41,7 +40,7 @@ rooms = shark.get_room_list()
 
 
 # create a schedule to clean specific rooms 
-print('Which rooms would you like to schedule ' + shark_name + ' to clean?')
+print('\nWhich rooms would you like to schedule ' + shark_name + ' to clean?')
 print("\n".join([f'\t{idx}: {val}' for idx, val in enumerate(rooms)]))
 
 selected_rooms = set()  # Initialize an empty set to store selected rooms
@@ -57,12 +56,21 @@ while True:
                 selected_rooms.add(rooms[selection])
                 print(f"{rooms[selection]} has been selected.")
             else:
-                print("You've already selected this room. Choose another room.")
+                print("You've already selected this room. Choose another room. Or enter 'done' to finish. ")
         else:
             print("Invalid room number. Please enter a valid room number.")
     except ValueError:
         print("Invalid input. Please enter a valid room number or 'done' to finish.")
 
+#show user the slected rooms
 print("You have selected the following rooms:")
 for room in selected_rooms:
     print(room)
+
+#ask user if they would like to start cleaning the slected rooms
+print('Would like to have ' + shark_name + ' start cleaning? (Y/N)' )
+reponse = input ()
+if reponse == "y":
+ shark.clean_rooms(selected_rooms)
+else:
+    exit()
