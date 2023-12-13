@@ -28,3 +28,48 @@ Before using this script, make sure you have the following prerequisites:
   ```bash
   pip install sharkiq
 
+## Installation
+
+Clone the repository to your local machine:
+bash
+Copy code
+git clone https://github.com/your-username/shark-robot-vacuum-scheduler.git
+Navigate to the project directory:
+bash
+Copy code
+cd shark-robot-vacuum-scheduler
+Run the script:
+bash
+Copy code
+python shark_scheduler.py
+Usage
+
+## Follow these steps to automate your Shark robot vacuum cleaning schedule:
+
+Sign in with your Shark account.
+Select your Shark robot vacuum.
+Choose specific rooms for cleaning.
+Create and start cleaning schedules according to your preferences.
+Features
+
+Sign in to your Shark account using the Ayla API.
+Select your Shark robot vacuum.
+Choose specific rooms for cleaning.
+Create cleaning schedules.
+Start cleaning according to your schedule.
+Contributing
+
+Contributions are welcome! If you would like to improve this script or add new features, please fork the repository and submit a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+This project uses the sharkiq Python library to interact with Shark's API.
+Disclaimer
+
+This project is not affiliated with or endorsed by SharkNinja or Shark IQ. Use it at your own discretion.
+
+Enjoy automated cleaning with your Shark robot vacuum!
