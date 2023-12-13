@@ -1,32 +1,68 @@
 from sharkiq import get_ayla_api, OperatingModes, Properties, PowerModes
 
-USERNAME = 'example@email.com'
-PASSWORD = 'password$'
 
+#get user sign in information 
+print('Enter Shark email address: ')
+USERNAME = 'example@email.com'
+print('Enter password: ')
+PASSWORD = 'Password$'
+
+#sign in  using the ayla api
 ayla_api = get_ayla_api(USERNAME, PASSWORD)
 ayla_api.sign_in()
 
-shark_vacs = ayla_api.get_devices()
-shark = shark_vacs[0]
-print(shark)
+#message user saying sign-in successful
+print('\nSign-in Succesful!')
 
+#Choose which robot you would like create a scedule for
+shark_vacs = ayla_api.get_devices()
+
+device_names = [device.name for device in shark_vacs]
+
+formatted_names = [f'\t{idx}: {name}' for idx, name in enumerate(device_names)]
+
+print('Which robot would you like to schedule specific rooms to clean?\n' + '\n'.join(formatted_names))
+robot_selection = input()
+try:
+    selected_idx = int(robot_selection)
+    if 0 <= selected_idx < len(shark_vacs):
+        shark = shark_vacs[selected_idx]
+        print(f'You selected: {shark.name} (ID: {selected_idx})')
+    else:
+        print("Invalid selection. Please enter a valid number.")
+except ValueError:
+    print("Invalid input. Please enter a valid number.")
+
+#reference for the robot name
+shark_name = shark.name
+
+#get all the rooms under the robot 
 rooms = shark.get_room_list()
 
-selected_rooms = []
+
+# create a schedule to clean specific rooms 
+print('Which rooms would you like to schedule ' + shark_name + ' to clean?')
+print("\n".join([f'\t{idx}: {val}' for idx, val in enumerate(rooms)]))
+
+selected_rooms = set()  # Initialize an empty set to store selected rooms
 
 while True:
-    print('Selected rooms: ' + (", ".join(selected_rooms) if len(selected_rooms) > 0 else "<None>" ))
-    print('Available rooms: ' + (", ".join(rooms)))
-    print('Enter the room number you would like to add to the cleaning list: ')
-    print("\n".join([f'\t{idx}: {val}' for idx, val in enumerate(rooms)]))
-    print('\tc: Start Cleaning\n\nEnter your Selection: ')
-    selection = input()
-    if selection == 'c':
-        shark.clean_rooms(selected_rooms)
+    selection = input("Enter the room number to select or 'done' to finish: ")
+    if selection.lower() == 'done':
         break
-    else:
-        try:
-            selected_rooms.append(rooms[int(selection)])
-            print('\n\n')
-        except:
-            print('\n🚨🚨 Oops, i didn\'t get that. Make sure you input a valid room index or the character "c" 🚨🚨')
+    try:
+        selection = int(selection)
+        if 0 <= selection < len(rooms):
+            if rooms[selection] not in selected_rooms:
+                selected_rooms.add(rooms[selection])
+                print(f"{rooms[selection]} has been selected.")
+            else:
+                print("You've already selected this room. Choose another room.")
+        else:
+            print("Invalid room number. Please enter a valid room number.")
+    except ValueError:
+        print("Invalid input. Please enter a valid room number or 'done' to finish.")
+
+print("You have selected the following rooms:")
+for room in selected_rooms:
+    print(room)
