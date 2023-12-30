@@ -1,11 +1,12 @@
 from sharkiq import get_ayla_api, OperatingModes, Properties, PowerModes
-
-
+import datetime
+import time
 #get user sign in information 
 print('Enter Shark email address: ')
-USERNAME = 'example@email.com'
+USERNAME = input()
 print('Enter password: ')
-PASSWORD = 'Password$'
+PASSWORD = input()
+
 #sign in  using the ayla api
 ayla_api = get_ayla_api(USERNAME, PASSWORD)
 ayla_api.sign_in()
@@ -67,10 +68,50 @@ print("You have selected the following rooms:")
 for room in selected_rooms:
     print(room)
 
-#ask user if they would like to start cleaning the slected rooms
-print('Would like to have ' + shark_name + ' start cleaning? (Y/N)' )
-reponse = input ()
-if reponse == "y":
- shark.clean_rooms(selected_rooms)
-else:
-    exit()
+# Prompt user to enter the scheduled time
+while True:
+    try:
+        scheduled_time = input("Enter the scheduled time in HH:MM format (24-hour clock): ")
+        scheduled_time = datetime.datetime.strptime(scheduled_time, "%H:%M")
+        break
+    except ValueError:
+        print("Invalid time format. Please enter the time in HH:MM format.")
+
+# Prompt user to select specific days for the schedule
+days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+print("Select the days for the schedule (e.g., 1 3 5 for Monday, Wednesday, Friday):")
+for idx, day in enumerate(days_of_week, start=1):
+    print(f"{idx}: {day}")
+selected_days = []
+while True:
+    try:
+        day_selection = input("Enter the numbers of the days you want to schedule (space-separated): ")
+        day_selection = [int(x) for x in day_selection.split()]
+        selected_days = [days_of_week[idx - 1] for idx in day_selection if 1 <= idx <= 7]
+        if selected_days:
+            break
+        else:
+            print("Invalid day selection. Please select at least one day.")
+    except ValueError:
+        print("Invalid input. Please enter the numbers of the days you want to schedule.")
+
+# ...
+
+# Now, you can use 'scheduled_time' and 'selected_days' in your scheduling logic
+print(f"You have scheduled {shark_name} to clean the selected rooms at {scheduled_time.strftime('%H:%M')} on {', '.join(selected_days)}.")
+
+#send the robot to clean the desired time
+while True:
+    current_time = datetime.datetime.now()
+    current_day = days_of_week[current_time.weekday()]
+
+    if current_time.strftime("%H:%M") == scheduled_time.strftime("%H:%M") and current_day in selected_days:
+        # It's time to clean on the selected day
+        print(f"Cleaning started at {current_time.strftime('%H:%M')} on {current_day}.")
+        shark.clean_rooms(selected_rooms)
+    
+    # Sleep for a while before checking again (adjust the sleep duration as needed)
+    time.sleep(60)  # Sleep for 1 minute before checking again
+
+
+
